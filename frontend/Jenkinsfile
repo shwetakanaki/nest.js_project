@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "nestjs_app"
+        IMAGE_TAG  = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AdarshSharma1234/nest.js_project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t $IMAGE_NAME:$IMAGE_TAG ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Optional: If pushing to Docker Hub / registry
+                    // sh "docker login -u <DOCKER_USER> -p <DOCKER_PASS>"
+                    // sh "docker tag $IMAGE_NAME:$IMAGE_TAG your_dockerhub/$IMAGE_NAME:$IMAGE_TAG"
+                    // sh "docker push your_dockerhub/$IMAGE_NAME:$IMAGE_TAG"
+                    echo "Add registry push steps if needed"
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    // stop and remove old container if exists
+                    sh "docker rm -f nestjs_container || true"
+
+                    // run new container
+                    sh "docker run -d --name nestjs_container -p 3000:3000 $IMAGE_NAME:$IMAGE_TAG"
+                }
+            }
+        }
+    }
+}
