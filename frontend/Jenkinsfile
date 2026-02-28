@@ -41,7 +41,7 @@ pipeline {
                     sh "docker rm -f nestjs_container || true"
 
                     // run new container
-                    sh "docker run -d --name nestjs_container -p 3000:3000 $IMAGE_NAME:$IMAGE_TAG"
+                    sh "docker run -d --name nestjs_container -P $IMAGE_NAME:$IMAGE_TAG"
                 }
             }
         }
